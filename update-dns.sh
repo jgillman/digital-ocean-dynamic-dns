@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 
+[ ! -f ./secrets ] && \
+  echo 'secrets file is missing!' && \
+  exit 1
+
 source ./secrets
+
+[ ! -x $RECORD_IDS ] && \
+  echo 'RECORD_IDS are missing!' && \
+  exit 1
 
 public_ip=$(curl -s http://checkip.amazonaws.com/)
 
