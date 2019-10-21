@@ -6,7 +6,8 @@
 
 source ./secrets
 
-[ ! -x $RECORD_IDS ] && \
+# Exit if the RECORD_IDS array has no elements
+[ ${#RECORD_IDS[@]} -eq 0 ] && \
   echo 'RECORD_IDS are missing!' && \
   exit 1
 
