@@ -9,4 +9,8 @@ response=$(curl \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   "https://api.digitalocean.com/v2/domains/$DOMAIN/records")
 
-echo $response | grep -Eo '"id":\d*|"type":"\w*"|"data":".*?"'
+if ! command -v jq &> /dev/null; then
+    echo $response | grep -Eo '"id":\d*|"type":"\w*"|"data":".*?"'
+else
+    echo $response | jq .domain_records
+fi

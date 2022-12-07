@@ -14,18 +14,28 @@ source ./secrets
 public_ip=$(curl -s http://checkip.amazonaws.com/)
 
 for ID in "${RECORD_IDS[@]}"; do
-  local_ip=$(
+  curl_response=$(
     curl \
-      --fail \
-      --silent \
-      -X GET \
-      -H "Content-Type: application/json" \
-      -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-      "https://api.digitalocean.com/v2/domains/${DOMAIN}/records/${ID}" | \
-      grep -Eo '"data":".*?"' | \
-      grep -Eo '+[0-9]\.[0-9]+\.[0-9]+\.[0-9]+'
+    --fail \
+    --silent \
+    -X GET \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+    "https://api.digitalocean.com/v2/domains/${DOMAIN}/records/${ID}"
   )
-
+  if ! command -v jq &> /dev/null; then
+    local_ip=$(
+      echo "${curl_response}" | \
+        grep -Eo '"data":".*?"' | \
+        grep -Eo '+[0-9]\.[0-9]+\.[0-9]+\.[0-9]+'
+    )
+  else
+    local_ip=$(
+      echo "${curl_response}" | \
+      jq -r '.domain_record.data'
+    )
+  fi
+  
   # if the IPs are the same just exit
   [ "$local_ip" == "$public_ip" ] && exit 0
 
