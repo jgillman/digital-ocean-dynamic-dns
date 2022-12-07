@@ -11,7 +11,11 @@ source ./secrets
   echo 'RECORD_IDS are missing!' && \
   exit 1
 
-public_ip=$(curl -s http://checkip.amazonaws.com/)
+if [[ "${IP_SERVICE}" == "AWS" ]]; then
+  public_ip=$(curl -s http://checkip.amazonaws.com/)
+elif [[ "${IP_SERVICE}" == "IPINFO" ]]; then
+  public_ip=$(curl -s http://ipinfo.io/ip)
+fi
 
 for ID in "${RECORD_IDS[@]}"; do
   curl_response=$(
@@ -37,9 +41,12 @@ for ID in "${RECORD_IDS[@]}"; do
   fi
   
   # if the IPs are the same just exit
-  [ "$local_ip" == "$public_ip" ] && exit 0
+  if [[ "$local_ip" == "$public_ip" ]]; then
+    echo "IP is unchanged. Exiting..."
+    exit 0
+  fi
 
-  echo "Updating DNS with new IP address: ${public_ip}"
+  echo "Updating DNS with new IP address: ${public_ip} - IP address was: ${local_ip}"
 
   # --fail silently on server errors
   curl \
