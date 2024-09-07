@@ -28,3 +28,6 @@ jobs:
     - name: Build the Docker image
       run: |
         docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/digital-ocean-dyndns:$TIMESTAMP && docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/digital-ocean-dyndns:latest
+    - name: Docker push images
+      run: docker push --all-tags ${{secrets.DOCKER_USER}}/digital-ocean-dyndns
+

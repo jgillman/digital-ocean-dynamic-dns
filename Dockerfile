@@ -12,4 +12,4 @@ COPY update-dns.sh .
 
 RUN chmod +x *.sh
 
-CMD cron && tail -f /var/log/cron.log
+CMD [ cron, tail -f /var/log/cron.log ]
