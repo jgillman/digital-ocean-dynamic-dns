@@ -12,4 +12,9 @@ COPY update-dns.sh .
 
 RUN chmod +x *.sh
 
+RUN apt-get update
+RUN apt-get -y install cron
+RUN apt-get -y install curl
+RUN apt-get -y install jq
+
 CMD [ cron, tail -f /var/log/cron.log ]
