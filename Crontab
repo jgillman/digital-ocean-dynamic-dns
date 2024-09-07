@@ -1,0 +1,1 @@
+*/30 * * * * /apps/update-dns.sh >/dev/null 2>&1
