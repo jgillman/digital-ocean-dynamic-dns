@@ -1,2 +1,3 @@
-*/30 * * * * /apps/update-dns.sh >> /var/log/cron.log 2>&1
+*/30 * * * * bash /apps/update-dns.sh >> /var/log/cron.log 2>&1
+
 # This is a required Newline

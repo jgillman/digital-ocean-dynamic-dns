@@ -7,14 +7,19 @@ WORKDIR /apps
 
 COPY Crontab /etc/cron.d/dyndns
 
-COPY get-dns.sh .
-COPY update-dns.sh .
+RUN chmod 0644 /etc/cron.d/dyndns
 
-RUN chmod +x *.sh
+COPY get-dns.sh /apps/
+COPY update-dns.sh /apps/
+
+RUN chmod 0755 /apps/get-dns.sh
+RUN chmod 0755 /apps/update-dns.sh
 
 RUN apt-get update
 RUN apt-get -y install cron
 RUN apt-get -y install curl
 RUN apt-get -y install jq
 
-CMD [ cron, tail -f /var/log/cron.log ]
+RUN touch /var/log/cron.log
+
+CMD cron && tail -f /var/log/cron.log
