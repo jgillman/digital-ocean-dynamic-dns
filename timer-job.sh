@@ -1,5 +1,5 @@
 #!/bin/bash
-while true do
+while true; do
     /apps/update-dns.sh
     sleep 300s
-end
+done
