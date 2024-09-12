@@ -1,1 +1,4 @@
+# Secrets file (to keep it secret)
 secrets
+# Emacs "backup" files, to prevent having tilde files in github
+*~

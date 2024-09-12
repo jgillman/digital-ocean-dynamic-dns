@@ -1,0 +1,33 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '15 0 * * THU,SUN'
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Add current timestamp as env variable
+      run: |
+        echo "TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
+    - name: Login to Docker Hub
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - name: Build the Docker image
+      run: |
+        docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/digital-ocean-dyndns:$TIMESTAMP && docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/digital-ocean-dyndns:latest
+    - name: Docker push images
+      run: docker push --all-tags ${{secrets.DOCKER_USER}}/digital-ocean-dyndns
+
