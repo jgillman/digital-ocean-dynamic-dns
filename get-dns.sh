@@ -9,4 +9,4 @@ response=$(curl \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   "https://api.digitalocean.com/v2/domains/$DOMAIN/records")
 
-echo $response | grep -Eo '"id":\d*|"type":"\w*"|"data":".*?"'
+echo "$response" | grep -Eo '"id":\d*|"type":"\w*"|"name":"\w*"|"data":".*?"'
