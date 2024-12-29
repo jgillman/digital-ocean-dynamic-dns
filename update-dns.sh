@@ -36,14 +36,16 @@ for ID in "${RECORD_IDS[@]}"; do
       -H "Authorization: Bearer ${ACCESS_TOKEN}" \
       "https://api.digitalocean.com/v2/domains/${DOMAIN}/records/${ID}" | \
       grep -Eo '"data":".*?"' | \
-      grep -Eo '+[0-9]\.[0-9]+\.[0-9]+\.[0-9]+'
+      grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+'
   )
 
   # if the IPs are the same just exit
-  [ "$local_ip" == "$public_ip" ] && exit 0
+  if [ "$local_ip" == "$public_ip" ]; then
+    echo "IP has not changed for record ${ID}, skipping."
+    continue
+  fi
 
-  echo "Updating DNS with new IP address: ${public_ip}"
-
+  echo "Updating DNS record ${ID} with new IP address: ${public_ip}"
   # --fail silently on server errors
   curl \
     --fail \
