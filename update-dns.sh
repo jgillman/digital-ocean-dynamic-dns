@@ -11,6 +11,19 @@ source ./secrets
   echo 'RECORD_IDS are missing!' && \
   exit 1
 
+# Function to check if the ACCESS_TOKEN is valid
+check_credentials() {
+  response=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${ACCESS_TOKEN}" "https://api.digitalocean.com/v2/account")
+  if [ "$response" != "200" ]; then
+    echo "Invalid credentials. Please check your ACCESS_TOKEN."
+    exit 1
+  fi
+}
+
+# Check credentials before proceeding
+check_credentials
+
+
 public_ip=$(curl -s http://checkip.amazonaws.com/)
 
 for ID in "${RECORD_IDS[@]}"; do
